@@ -1,12 +1,47 @@
+-- Combined MLML673 HUB v2.0
+-- Merged: FPS Devour + AP Spammer + Speed Booster + ESP System
+-- ts file was generated at discord.gg/25ms
+
+local fenv = getfenv()
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local TextChatService = game:GetService("TextChatService")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
+local Lighting = game:GetService('Lighting')
 local Camera = workspace.CurrentCamera
 
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+task.wait(1)
+
+-- ========== INITIALIZE VARIABLES ==========
+local Backpack = LocalPlayer:WaitForChild('Backpack')
+local Character = LocalPlayer.Character
+
+-- Clear old UI if exists
+game.CoreGui:FindFirstChild('TigyFPSDevourUI'):Destroy()
+game.CoreGui:FindFirstChild('CombinedUI'):Destroy()
+
+-- ========== GRAPHICS OPTIMIZATION (FPS DEVOUR) ==========
+local _ = fenv.settings
+
+Lighting.GlobalShadows = false
+Lighting.EnvironmentDiffuseScale = 0
+Lighting.EnvironmentSpecularScale = 0
+
+for _, effect in ipairs(Lighting:GetChildren()) do
+    if effect:IsA('PostEffect') then
+        effect.Enabled = false
+    end
+end
+
+for _, particle in ipairs(workspace:GetDescendants()) do
+    if particle:IsA('ParticleEmitter') then
+        particle.Enabled = false
+    end
+end
 
 -- ========== ACCESSORY REMOVAL ==========
 local function RemoveAccessories(character)
@@ -33,16 +68,119 @@ local function RemoveAccessories(character)
     end)
 end
 
+-- Remove accessories from existing humanoids
+for _, humanoid in ipairs(workspace:GetDescendants()) do
+    if humanoid:IsA('Humanoid') then
+        local parent = humanoid.Parent
+        for _, accessory in ipairs(parent:GetChildren()) do
+            if accessory:IsA('Accessory') then
+                accessory:Destroy()
+            end
+        end
+        
+        parent.ChildAdded:Connect(function(child)
+            if child:IsA('Accessory') then
+                child:Destroy()
+            end
+        end)
+    end
+end
+
+-- Remove accessories from new humanoids
+workspace.DescendantAdded:Connect(function(descendant)
+    if descendant:IsA('Humanoid') then
+        local parent = descendant.Parent
+        for _, accessory in ipairs(parent:GetChildren()) do
+            if accessory:IsA('Accessory') then
+                accessory:Destroy()
+            end
+        end
+        
+        parent.ChildAdded:Connect(function(child)
+            if child:IsA('Accessory') then
+                child:Destroy()
+            end
+        end)
+    end
+end)
+
 if LocalPlayer.Character then
     RemoveAccessories(LocalPlayer.Character)
 end
 LocalPlayer.CharacterAdded:Connect(RemoveAccessories)
 
--- ========== MAIN GUI ==========
+-- ========== MAIN GUI CONTAINER ==========
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "CombinedUI"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = PlayerGui
+
+-- ========== FPS DEVOUR FRAME ==========
+local FPSFrame = Instance.new('Frame')
+FPSFrame.Name = 'TigyFPSDevourUI'
+FPSFrame.Parent = ScreenGui
+FPSFrame.Size = UDim2.new(0, 340, 0, 160)
+FPSFrame.Position = UDim2.new(0.5, -170, 0.85, -80)
+FPSFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+FPSFrame.BorderSizePixel = 0
+FPSFrame.Active = true
+FPSFrame.Draggable = true
+
+local FPSCorner = Instance.new('UICorner', FPSFrame)
+FPSCorner.CornerRadius = UDim.new(0, 18)
+
+local FPSTitle = Instance.new('TextLabel')
+FPSTitle.Parent = FPSFrame
+FPSTitle.Size = UDim2.new(1, -20, 0, 40)
+FPSTitle.Position = UDim2.new(0, 10, 0, 10)
+FPSTitle.BackgroundTransparency = 1
+FPSTitle.Text = 'Tigy\'s FPS Devour'
+FPSTitle.Font = Enum.Font.GothamBlack
+FPSTitle.TextSize = 20
+FPSTitle.TextXAlignment = Enum.TextXAlignment.Left
+FPSTitle.TextColor3 = Color3.new(1, 1, 1)
+
+local FPSButton = Instance.new('TextButton')
+FPSButton.Parent = FPSFrame
+FPSButton.Size = UDim2.new(1, -40, 0, 54)
+FPSButton.Position = UDim2.new(0, 20, 0, 80)
+FPSButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+FPSButton.Text = 'FPS Devour (need auras)'
+FPSButton.Font = Enum.Font.GothamBold
+FPSButton.TextSize = 15
+FPSButton.TextColor3 = Color3.new(1, 1, 1)
+FPSButton.BorderSizePixel = 0
+FPSButton.AutoButtonColor = true
+
+local FPSCornerBtn = Instance.new('UICorner', FPSButton)
+FPSCornerBtn.CornerRadius = UDim.new(0, 14)
+
+FPSButton.MouseButton1Click:Connect(function()
+    FPSButton.Text = 'WORKING...'
+    FPSButton.AutoButtonColor = false
+
+    local character = LocalPlayer.Character
+    local humanoid = character:FindFirstChildOfClass('Humanoid')
+    local quantumCloner = Backpack:FindFirstChild('Quantum Cloner')
+
+    if humanoid and quantumCloner then
+        humanoid:EquipTool(quantumCloner)
+        task.wait()
+
+        for _, tool in ipairs(Backpack:GetChildren()) do
+            if tool:IsA('Tool') then
+                tool.Parent = character
+            end
+        end
+
+        task.wait()
+        quantumCloner:Activate()
+        task.delay(0.5, function()
+            FPSButton.Text = 'FPS Devour (need auras)'
+            FPSButton.AutoButtonColor = true
+        end)
+    end
+end)
 
 -- ========== AP SPAMMER GUI ==========
 local SpammerFrame = Instance.new("Frame")
@@ -58,7 +196,6 @@ local SpammerCorner = Instance.new("UICorner")
 SpammerCorner.CornerRadius = UDim.new(0, 12)
 SpammerCorner.Parent = SpammerFrame
 
--- Title Bar for Spammer
 local TitleBar = Instance.new("Frame")
 TitleBar.Size = UDim2.new(1, 0, 0, 28)
 TitleBar.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
@@ -80,7 +217,6 @@ TitleLabel.Font = Enum.Font.GothamBold
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 TitleLabel.Parent = TitleBar
 
--- Minimize Button
 local MinimizeButton = Instance.new("TextButton")
 MinimizeButton.Size = UDim2.new(0, 22, 0, 22)
 MinimizeButton.Position = UDim2.new(1, -24, 0, 3)
@@ -95,7 +231,6 @@ local MinCorner = Instance.new("UICorner")
 MinCorner.CornerRadius = UDim.new(0, 6)
 MinCorner.Parent = MinimizeButton
 
--- Player List
 local Scroll = Instance.new("ScrollingFrame")
 Scroll.Position = UDim2.new(0, 0, 0, 32)
 Scroll.Size = UDim2.new(1, 0, 1, -34)
@@ -121,7 +256,6 @@ BoosterFrame.Parent = ScreenGui
 local BoosterCorner = Instance.new("UICorner", BoosterFrame)
 BoosterCorner.CornerRadius = UDim.new(0, 8)
 
--- Gradient effect
 local UIGradient = Instance.new("UIGradient", BoosterFrame)
 UIGradient.Color = ColorSequence.new({
     ColorSequenceKeypoint.new(0, Color3.fromRGB(20, 20, 20)),
@@ -130,18 +264,15 @@ UIGradient.Color = ColorSequence.new({
 })
 UIGradient.Rotation = 45
 
--- Animated white stroke
 local Stroke = Instance.new("UIStroke", BoosterFrame)
 Stroke.Color = Color3.new(1, 1, 1)
 Stroke.Thickness = 2
 Stroke.Transparency = 0.3
 
--- Animate the stroke
 RunService.Heartbeat:Connect(function()
     UIGradient.Offset = Vector2.new((tick() % 2) - 1, 0)
 end)
 
--- Title
 local BoosterTitle = Instance.new("TextLabel")
 BoosterTitle.Size = UDim2.new(1, -20, 0, 20)
 BoosterTitle.Position = UDim2.new(0, 10, 0, 8)
@@ -153,7 +284,6 @@ BoosterTitle.TextSize = 14
 BoosterTitle.TextXAlignment = Enum.TextXAlignment.Left
 BoosterTitle.Parent = BoosterFrame
 
--- Speed Row
 local SpeedLabel = Instance.new("TextLabel")
 SpeedLabel.Size = UDim2.new(0, 50, 0, 20)
 SpeedLabel.Position = UDim2.new(0, 10, 0, 40)
@@ -184,7 +314,6 @@ local SpeedBoxStroke = Instance.new("UIStroke", SpeedBox)
 SpeedBoxStroke.Color = Color3.new(1, 0, 0)
 SpeedBoxStroke.Thickness = 1
 
--- Jump Row
 local JumpLabel = Instance.new("TextLabel")
 JumpLabel.Size = UDim2.new(0, 50, 0, 20)
 JumpLabel.Position = UDim2.new(0, 10, 0, 65)
@@ -215,7 +344,6 @@ local JumpBoxStroke = Instance.new("UIStroke", JumpBox)
 JumpBoxStroke.Color = Color3.new(1, 0, 0)
 JumpBoxStroke.Thickness = 1
 
--- Toggle Button
 local ToggleButton = Instance.new("TextButton")
 ToggleButton.Name = "ToggleBooster"
 ToggleButton.Size = UDim2.new(0, 40, 0, 16)
@@ -228,7 +356,6 @@ ToggleButton.Parent = BoosterFrame
 local ToggleCorner = Instance.new("UICorner", ToggleButton)
 ToggleCorner.CornerRadius = UDim.new(0, 8)
 
--- Toggle Background
 local ToggleBackground = Instance.new("Frame", ToggleButton)
 ToggleBackground.Size = UDim2.new(1, 0, 1, 0)
 ToggleBackground.BackgroundColor3 = Color3.new(0.8, 0, 0)
@@ -236,7 +363,6 @@ ToggleBackground.BackgroundTransparency = 0.3
 ToggleBackground.ZIndex = 0
 Instance.new("UICorner", ToggleBackground).CornerRadius = UDim.new(0, 8)
 
--- Toggle Knob
 local Knob = Instance.new("Frame", ToggleButton)
 Knob.Name = "ToggleKnob"
 Knob.Size = UDim2.new(0, 12, 0, 12)
@@ -249,7 +375,6 @@ Knob.Parent = ToggleButton
 local KnobCorner = Instance.new("UICorner", Knob)
 KnobCorner.CornerRadius = UDim.new(0, 6)
 
--- Status indicator
 local StatusLabel = Instance.new("TextLabel")
 StatusLabel.Size = UDim2.new(0, 40, 0, 12)
 StatusLabel.Position = UDim2.new(1, -50, 0, 26)
@@ -279,7 +404,6 @@ ESPStroke.Color = Color3.new(0, 1, 1)
 ESPStroke.Thickness = 2
 ESPStroke.Transparency = 0.3
 
--- ESP Title
 local ESPTitle = Instance.new("TextLabel")
 ESPTitle.Size = UDim2.new(1, -20, 0, 20)
 ESPTitle.Position = UDim2.new(0, 10, 0, 5)
@@ -291,7 +415,6 @@ ESPTitle.TextSize = 14
 ESPTitle.TextXAlignment = Enum.TextXAlignment.Left
 ESPTitle.Parent = ESPFrame
 
--- ESP Toggle Button
 local ESPToggleButton = Instance.new("TextButton")
 ESPToggleButton.Name = "ESPToggle"
 ESPToggleButton.Size = UDim2.new(0, 40, 0, 16)
@@ -304,7 +427,6 @@ ESPToggleButton.Parent = ESPFrame
 local ESPToggleCorner = Instance.new("UICorner", ESPToggleButton)
 ESPToggleCorner.CornerRadius = UDim.new(0, 8)
 
--- ESP Toggle Background
 local ESPToggleBackground = Instance.new("Frame", ESPToggleButton)
 ESPToggleBackground.Size = UDim2.new(1, 0, 1, 0)
 ESPToggleBackground.BackgroundColor3 = Color3.new(0.8, 0, 0)
@@ -312,7 +434,6 @@ ESPToggleBackground.BackgroundTransparency = 0.3
 ESPToggleBackground.ZIndex = 0
 Instance.new("UICorner", ESPToggleBackground).CornerRadius = UDim.new(0, 8)
 
--- ESP Toggle Knob
 local ESPKnob = Instance.new("Frame", ESPToggleButton)
 ESPKnob.Name = "ESPToggleKnob"
 ESPKnob.Size = UDim2.new(0, 12, 0, 12)
@@ -325,7 +446,6 @@ ESPKnob.Parent = ESPToggleButton
 local ESPKnobCorner = Instance.new("UICorner", ESPKnob)
 ESPKnobCorner.CornerRadius = UDim.new(0, 6)
 
--- ESP Status Label
 local ESPStatusLabel = Instance.new("TextLabel")
 ESPStatusLabel.Size = UDim2.new(0, 40, 0, 12)
 ESPStatusLabel.Position = UDim2.new(1, -50, 0, 26)
@@ -343,7 +463,6 @@ local draggingBooster = false
 local draggingESP = false
 local dragStart, startPos
 
--- Spammer dragging
 TitleBar.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         draggingSpammer = true
@@ -352,7 +471,6 @@ TitleBar.InputBegan:Connect(function(input)
     end
 end)
 
--- Booster dragging
 BoosterFrame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
         draggingBooster = true
@@ -369,7 +487,6 @@ BoosterFrame.InputBegan:Connect(function(input)
     end
 end)
 
--- ESP dragging
 ESPFrame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
         draggingESP = true
@@ -587,7 +704,7 @@ BoosterFrame.MouseLeave:Connect(function()
     TweenService:Create(Stroke, TweenInfo.new(0.2), { Transparency = 0.3 }):Play()
 end)
 
--- ========== ESP SYSTEM (FIXED) ==========
+-- ========== ESP SYSTEM ==========
 local ESPEnabled = false
 local ESPBoxes = {}
 
@@ -601,7 +718,6 @@ local function createESPBox(player)
     local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
     if not humanoidRootPart then return end
     
-    -- Create highlight effect directly on character
     local highlight = Instance.new("Highlight")
     highlight.Parent = character
     highlight.FillColor = Color3.fromRGB(0, 255, 255)
@@ -609,7 +725,6 @@ local function createESPBox(player)
     highlight.FillTransparency = 0.3
     highlight.OutlineTransparency = 0
     
-    -- Create name label using SurfaceGui
     local surfaceGui = Instance.new("SurfaceGui")
     surfaceGui.Parent = humanoidRootPart
     surfaceGui.Face = Enum.NormalId.Top
@@ -667,7 +782,6 @@ ESPToggleButton.MouseButton1Click:Connect(function()
     ESPStatusLabel.Text = statusText
     
     if ESPEnabled then
-        -- Add ESP to all players
         for _, player in pairs(Players:GetPlayers()) do
             if player ~= LocalPlayer then
                 createESPBox(player)
@@ -675,7 +789,6 @@ ESPToggleButton.MouseButton1Click:Connect(function()
         end
         print("🔵 ESP ENABLED")
     else
-        -- Remove ESP from all players
         for player, _ in pairs(ESPBoxes) do
             removeESPBox(player)
         end
@@ -708,3 +821,5 @@ end)
 ESPFrame.MouseLeave:Connect(function()
     TweenService:Create(ESPStroke, TweenInfo.new(0.2), { Transparency = 0.3 }):Play()
 end)
+
+print("✅ MLML673 Combined Hub v2.0 loaded successfully!")
