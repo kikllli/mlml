@@ -3,6 +3,7 @@ local UserInputService = game:GetService("UserInputService")
 local TextChatService = game:GetService("TextChatService")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Camera = workspace.CurrentCamera
 
 local LocalPlayer = Players.LocalPlayer
@@ -73,7 +74,7 @@ local TitleLabel = Instance.new("TextLabel")
 TitleLabel.Size = UDim2.new(1, -28, 1, 0)
 TitleLabel.Position = UDim2.new(0, 6, 0, 0)
 TitleLabel.BackgroundTransparency = 1
-TitleLabel.Text = "MLML673 HUB ap spammer"
+TitleLabel.Text = "daddy jays ap spammer"
 TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TitleLabel.TextScaled = true
 TitleLabel.Font = Enum.Font.GothamBold
@@ -146,7 +147,7 @@ local BoosterTitle = Instance.new("TextLabel")
 BoosterTitle.Size = UDim2.new(1, -20, 0, 20)
 BoosterTitle.Position = UDim2.new(0, 10, 0, 8)
 BoosterTitle.BackgroundTransparency = 1
-BoosterTitle.Text = "MLML673 HUB"
+BoosterTitle.Text = "orangefish booster"
 BoosterTitle.TextColor3 = Color3.new(1, 0, 0)
 BoosterTitle.Font = Enum.Font.GothamBold
 BoosterTitle.TextSize = 14
@@ -284,7 +285,7 @@ local ESPTitle = Instance.new("TextLabel")
 ESPTitle.Size = UDim2.new(1, -20, 0, 20)
 ESPTitle.Position = UDim2.new(0, 10, 0, 5)
 ESPTitle.BackgroundTransparency = 1
-ESPTitle.Text = "ESP MLML673"
+ESPTitle.Text = "ESP Highlighter"
 ESPTitle.TextColor3 = Color3.new(0, 1, 1)
 ESPTitle.Font = Enum.Font.GothamBold
 ESPTitle.TextSize = 14
@@ -336,6 +337,94 @@ ESPStatusLabel.Font = Enum.Font.GothamBold
 ESPStatusLabel.TextSize = 10
 ESPStatusLabel.TextXAlignment = Enum.TextXAlignment.Center
 ESPStatusLabel.Parent = ESPFrame
+
+-- ========== PLOT CONTROL GUI (ADDED) ==========
+local PlotControlFrame = Instance.new("Frame")
+PlotControlFrame.Name = "PlotControlFrame"
+PlotControlFrame.Size = UDim2.new(0, 220, 0, 110)
+PlotControlFrame.Position = UDim2.new(0, 210, 0, 20)
+PlotControlFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+PlotControlFrame.BorderSizePixel = 0
+PlotControlFrame.Parent = ScreenGui
+PlotControlFrame.Active = true
+PlotControlFrame.Draggable = true
+
+local PlotCorner = Instance.new("UICorner")
+PlotCorner.CornerRadius = UDim.new(0, 10)
+PlotCorner.Parent = PlotControlFrame
+
+local PlotStroke = Instance.new("UIStroke")
+PlotStroke.Thickness = 3
+PlotStroke.Color = Color3.fromRGB(255, 165, 0)
+PlotStroke.Parent = PlotControlFrame
+
+local PlotTitle = Instance.new("TextLabel")
+PlotTitle.Parent = PlotControlFrame
+PlotTitle.Size = UDim2.new(1, -20, 0, 40)
+PlotTitle.Position = UDim2.new(0, 10, 0, 5)
+PlotTitle.BackgroundTransparency = 1
+PlotTitle.Text = "Silly's Plot Control"
+PlotTitle.Font = Enum.Font.GothamBlack
+PlotTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+PlotTitle.TextScaled = true
+PlotTitle.TextWrapped = true
+
+local PlotSubtitle = Instance.new("TextLabel")
+PlotSubtitle.Parent = PlotControlFrame
+PlotSubtitle.Size = UDim2.new(1, -20, 0, 20)
+PlotSubtitle.Position = UDim2.new(0, 10, 0, 35)
+PlotSubtitle.BackgroundTransparency = 1
+PlotSubtitle.Text = "@chilliesupersilly on tt"
+PlotSubtitle.Font = Enum.Font.Gotham
+PlotSubtitle.TextColor3 = Color3.fromRGB(200, 200, 200)
+PlotSubtitle.TextScaled = true
+PlotSubtitle.TextWrapped = true
+
+local PlotButton = Instance.new("TextButton")
+PlotButton.Parent = PlotControlFrame
+PlotButton.Size = UDim2.new(0, 180, 0, 35)
+PlotButton.Position = UDim2.new(0, 20, 0, 60)
+PlotButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+PlotButton.BorderSizePixel = 0
+PlotButton.Font = Enum.Font.GothamBlack
+PlotButton.Text = "Allow/Disallow"
+PlotButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+PlotButton.TextScaled = true
+
+local PlotButtonCorner = Instance.new("UICorner")
+PlotButtonCorner.CornerRadius = UDim.new(0, 8)
+PlotButtonCorner.Parent = PlotButton
+
+-- Plot Control Functionality
+local plotControlAvailable = false
+local plotTogglePath = nil
+
+-- Check if plot control RemoteEvent exists
+pcall(function()
+    plotTogglePath = ReplicatedStorage:WaitForChild('Packages'):WaitForChild('Net'):WaitForChild('RE/PlotService/ToggleFriends')
+    plotControlAvailable = true
+    print("✅ Plot Control RemoteEvent found!")
+end)
+
+PlotButton.MouseButton1Click:Connect(function()
+    if plotControlAvailable and plotTogglePath then
+        pcall(function()
+            plotTogglePath:FireServer()
+            print("🔄 Plot friends toggled!")
+        end)
+    else
+        print("❌ Plot Control not available in this game")
+    end
+end)
+
+-- Hover effect for plot button
+PlotButton.MouseEnter:Connect(function()
+    TweenService:Create(PlotButton, TweenInfo.new(0.2), { BackgroundColor3 = Color3.fromRGB(50, 50, 50) }):Play()
+end)
+
+PlotButton.MouseLeave:Connect(function()
+    TweenService:Create(PlotButton, TweenInfo.new(0.2), { BackgroundColor3 = Color3.fromRGB(30, 30, 30) }):Play()
+end)
 
 -- ========== DRAGGING FUNCTIONALITY ==========
 local draggingSpammer = false
@@ -587,7 +676,7 @@ BoosterFrame.MouseLeave:Connect(function()
     TweenService:Create(Stroke, TweenInfo.new(0.2), { Transparency = 0.3 }):Play()
 end)
 
--- ========== ESP SYSTEM (FIXED) ==========
+-- ========== ESP SYSTEM ==========
 local ESPEnabled = false
 local ESPBoxes = {}
 
