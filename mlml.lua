@@ -338,7 +338,7 @@ ESPStatusLabel.TextSize = 10
 ESPStatusLabel.TextXAlignment = Enum.TextXAlignment.Center
 ESPStatusLabel.Parent = ESPFrame
 
--- ========== PLOT CONTROL GUI (ADDED) ==========
+-- ========== PLOT CONTROL GUI (FIXED) ==========
 local PlotControlFrame = Instance.new("Frame")
 PlotControlFrame.Name = "PlotControlFrame"
 PlotControlFrame.Size = UDim2.new(0, 220, 0, 110)
@@ -395,25 +395,127 @@ local PlotButtonCorner = Instance.new("UICorner")
 PlotButtonCorner.CornerRadius = UDim.new(0, 8)
 PlotButtonCorner.Parent = PlotButton
 
--- Plot Control Functionality
-local plotControlAvailable = false
+-- ========== PLOT CONTROL FUNCTIONALITY (FIXED) ==========
 local plotTogglePath = nil
+local plotControlAvailable = false
 
--- Check if plot control RemoteEvent exists
-pcall(function()
-    plotTogglePath = ReplicatedStorage:WaitForChild('Packages'):WaitForChild('Net'):WaitForChild('RE/PlotService/ToggleFriends')
-    plotControlAvailable = true
-    print("✅ Plot Control RemoteEvent found!")
-end)
-
-PlotButton.MouseButton1Click:Connect(function()
-    if plotControlAvailable and plotTogglePath then
+-- Try to find the remote event in different locations
+local function findPlotRemote()
+    local success = false
+    
+    -- Try method 1: ReplicatedStorage -> Packages -> Net -> RE/PlotService/ToggleFriends
+    pcall(function()
+        plotTogglePath = ReplicatedStorage:WaitForChild('Packages', 5):WaitForChild('Net', 5):WaitForChild('RE/PlotService/ToggleFriends', 5)
+        success = true
+        print("✅ Plot Control found in: ReplicatedStorage/Packages/Net")
+    end)
+    
+    if not success then
+        -- Try method 2: Direct search in ReplicatedStorage
         pcall(function()
-            plotTogglePath:FireServer()
-            print("🔄 Plot friends toggled!")
+            for _, obj in pairs(ReplicatedStorage:GetDescendants()) do
+                if obj.Name == 'ToggleFriends' or string.find(obj.Name:lower(), 'toggle') then
+                    if obj:IsA('RemoteEvent') or obj:IsA('RemoteFunction') then
+                        plotTogglePath = obj
+                        success = true
+                        print("✅ Plot Control found: " .. obj:GetFullName())
+                        break
+                    end
+                end
+            end
+        end)
+    end
+    
+    if not success then
+        -- Try method 3: Wait for it with longer timeout
+        pcall(function()
+            plotTogglePath = ReplicatedStorage:FindFirstChild('Packages')
+            if plotTogglePath then
+                plotTogglePath = plotTogglePath:FindFirstChild('Net')
+            end
+            if plotTogglePath then
+                plotTogglePath = plotTogglePath:FindFirstChild('RE/PlotService/ToggleFriends')
+            end
+            if plotTogglePath then
+                success = true
+                print("✅ Plot Control found (method 3)")
+            end
+        end)
+    end
+    
+    plotControlAvailable = success
+    return success
+end
+
+-- Search for plot remote
+task.wait(0.5)
+findPlotRemote()
+
+if not plotControlAvailable then
+    print("⚠️ Plot Control RemoteEvent not found. Button will try on click.")
+end
+
+-- Plot Button Click Handler
+PlotButton.MouseButton1Click:Connect(function()
+    print("🔵 Plot button clicked!")
+    
+    -- Try to find if not already found
+    if not plotTogglePath then
+        findPlotRemote()
+    end
+    
+    if plotTogglePath then
+        pcall(function()
+            if plotTogglePath:IsA('RemoteEvent') then
+                plotTogglePath:FireServer()
+                print("✅ RemoteEvent fired successfully!")
+            elseif plotTogglePath:IsA('RemoteFunction') then
+                plotTogglePath:InvokeServer()
+                print("✅ RemoteFunction invoked successfully!")
+            end
         end)
     else
-        print("❌ Plot Control not available in this game")
+        -- Fallback: Try to find and fire any related remote
+        pcall(function()
+            local packages = ReplicatedStorage:FindFirstChild('Packages')
+            if packages then
+                local net = packages:FindFirstChild('Net')
+                if net then
+                    local plotService = net:FindFirstChild('RE/PlotService')
+                    if not plotService then
+                        -- Try alternate path
+                        for _, v in pairs(net:GetChildren()) do
+                            if string.find(v.Name:lower(), 'plot') then
+                                plotService = v
+                                break
+                            end
+                        end
+                    end
+                    
+                    if plotService then
+                        local toggleFriends = plotService:FindFirstChild('ToggleFriends')
+                        if not toggleFriends then
+                            for _, v in pairs(plotService:GetChildren()) do
+                                if string.find(v.Name:lower(), 'toggle') or string.find(v.Name:lower(), 'friend') then
+                                    toggleFriends = v
+                                    break
+                                end
+                            end
+                        end
+                        
+                        if toggleFriends then
+                            if toggleFriends:IsA('RemoteEvent') then
+                                toggleFriends:FireServer()
+                                print("✅ Plot Remote fired (fallback method)!")
+                            elseif toggleFriends:IsA('RemoteFunction') then
+                                toggleFriends:InvokeServer()
+                                print("✅ Plot Remote invoked (fallback method)!")
+                            end
+                        end
+                    end
+                end
+            end
+        end)
     end
 end)
 
