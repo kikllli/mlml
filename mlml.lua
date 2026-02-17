@@ -72,7 +72,7 @@ local TitleLabel = Instance.new("TextLabel")
 TitleLabel.Size = UDim2.new(1, -28, 1, 0)
 TitleLabel.Position = UDim2.new(0, 6, 0, 0)
 TitleLabel.BackgroundTransparency = 1
-TitleLabel.Text = "MLML673 HUB"
+TitleLabel.Text = "daddy jays ap spammer"
 TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TitleLabel.TextScaled = true
 TitleLabel.Font = Enum.Font.GothamBold
@@ -145,7 +145,7 @@ local BoosterTitle = Instance.new("TextLabel")
 BoosterTitle.Size = UDim2.new(1, -20, 0, 20)
 BoosterTitle.Position = UDim2.new(0, 10, 0, 8)
 BoosterTitle.BackgroundTransparency = 1
-BoosterTitle.Text = "MLML673 HUB BOOST"
+BoosterTitle.Text = "orangefish booster"
 BoosterTitle.TextColor3 = Color3.new(1, 0, 0)
 BoosterTitle.Font = Enum.Font.GothamBold
 BoosterTitle.TextSize = 14
@@ -260,9 +260,119 @@ StatusLabel.TextSize = 10
 StatusLabel.TextXAlignment = Enum.TextXAlignment.Center
 StatusLabel.Parent = BoosterFrame
 
+-- ========== ESP GUI ==========
+local ESPFrame = Instance.new("Frame")
+ESPFrame.Name = "ESPFrame"
+ESPFrame.Size = UDim2.new(0, 180, 0, 70)
+ESPFrame.Position = UDim2.new(0, 20, 0, 140)
+ESPFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+ESPFrame.BackgroundTransparency = 0.2
+ESPFrame.BorderSizePixel = 0
+ESPFrame.Parent = ScreenGui
+
+local ESPCorner = Instance.new("UICorner", ESPFrame)
+ESPCorner.CornerRadius = UDim.new(0, 8)
+
+local ESPStroke = Instance.new("UIStroke", ESPFrame)
+ESPStroke.Color = Color3.new(0, 1, 1)
+ESPStroke.Thickness = 2
+ESPStroke.Transparency = 0.3
+
+-- ESP Title
+local ESPTitle = Instance.new("TextLabel")
+ESPTitle.Size = UDim2.new(1, -20, 0, 20)
+ESPTitle.Position = UDim2.new(0, 10, 0, 5)
+ESPTitle.BackgroundTransparency = 1
+ESPTitle.Text = "ESP Highlighter"
+ESPTitle.TextColor3 = Color3.new(0, 1, 1)
+ESPTitle.Font = Enum.Font.GothamBold
+ESPTitle.TextSize = 14
+ESPTitle.TextXAlignment = Enum.TextXAlignment.Left
+ESPTitle.Parent = ESPFrame
+
+-- ESP Toggle Button
+local ESPToggleButton = Instance.new("TextButton")
+ESPToggleButton.Name = "ESPToggle"
+ESPToggleButton.Size = UDim2.new(0, 40, 0, 16)
+ESPToggleButton.Position = UDim2.new(1, -50, 0, 8)
+ESPToggleButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+ESPToggleButton.Text = ""
+ESPToggleButton.AutoButtonColor = false
+ESPToggleButton.Parent = ESPFrame
+
+local ESPToggleCorner = Instance.new("UICorner", ESPToggleButton)
+ESPToggleCorner.CornerRadius = UDim.new(0, 8)
+
+-- ESP Toggle Background
+local ESPToggleBackground = Instance.new("Frame", ESPToggleButton)
+ESPToggleBackground.Size = UDim2.new(1, 0, 1, 0)
+ESPToggleBackground.BackgroundColor3 = Color3.new(0.8, 0, 0)
+ESPToggleBackground.BackgroundTransparency = 0.3
+ESPToggleBackground.ZIndex = 0
+Instance.new("UICorner", ESPToggleBackground).CornerRadius = UDim.new(0, 8)
+
+-- ESP Toggle Knob
+local ESPKnob = Instance.new("Frame", ESPToggleButton)
+ESPKnob.Name = "ESPToggleKnob"
+ESPKnob.Size = UDim2.new(0, 12, 0, 12)
+ESPKnob.Position = UDim2.new(0, 2, 0.5, 0)
+ESPKnob.AnchorPoint = Vector2.new(0, 0.5)
+ESPKnob.BackgroundColor3 = Color3.new(1, 1, 1)
+ESPKnob.ZIndex = 2
+ESPKnob.Parent = ESPToggleButton
+
+local ESPKnobCorner = Instance.new("UICorner", ESPKnob)
+ESPKnobCorner.CornerRadius = UDim.new(0, 6)
+
+-- ESP Status Label
+local ESPStatusLabel = Instance.new("TextLabel")
+ESPStatusLabel.Size = UDim2.new(0, 40, 0, 12)
+ESPStatusLabel.Position = UDim2.new(1, -50, 0, 26)
+ESPStatusLabel.BackgroundTransparency = 1
+ESPStatusLabel.Text = "OFF"
+ESPStatusLabel.TextColor3 = Color3.new(1, 0, 0)
+ESPStatusLabel.Font = Enum.Font.GothamBold
+ESPStatusLabel.TextSize = 10
+ESPStatusLabel.TextXAlignment = Enum.TextXAlignment.Center
+ESPStatusLabel.Parent = ESPFrame
+
+-- Visibility toggle
+local VisibilityLabel = Instance.new("TextLabel")
+VisibilityLabel.Size = UDim2.new(0, 70, 0, 16)
+VisibilityLabel.Position = UDim2.new(0, 10, 0, 32)
+VisibilityLabel.BackgroundTransparency = 1
+VisibilityLabel.Text = "Invisible:"
+VisibilityLabel.TextColor3 = Color3.new(1, 1, 1)
+VisibilityLabel.Font = Enum.Font.Gotham
+VisibilityLabel.TextSize = 11
+VisibilityLabel.TextXAlignment = Enum.TextXAlignment.Left
+VisibilityLabel.Parent = ESPFrame
+
+local VisibilityToggle = Instance.new("TextButton")
+VisibilityToggle.Name = "VisibilityToggle"
+VisibilityToggle.Size = UDim2.new(0, 35, 0, 16)
+VisibilityToggle.Position = UDim2.new(0, 85, 0, 32)
+VisibilityToggle.BackgroundColor3 = Color3.new(0.2, 0.6, 0.2)
+VisibilityToggle.TextColor3 = Color3.new(1, 1, 1)
+VisibilityToggle.Text = "YES"
+VisibilityToggle.Font = Enum.Font.GothamBold
+VisibilityToggle.TextSize = 10
+VisibilityToggle.AutoButtonColor = false
+VisibilityToggle.Parent = ESPFrame
+
+Instance.new("UICorner", VisibilityToggle).CornerRadius = UDim.new(0, 4)
+
+local showInvisible = true
+VisibilityToggle.MouseButton1Click:Connect(function()
+    showInvisible = not showInvisible
+    VisibilityToggle.Text = showInvisible and "YES" or "NO"
+    VisibilityToggle.BackgroundColor3 = showInvisible and Color3.new(0.2, 0.6, 0.2) or Color3.new(0.6, 0.2, 0.2)
+end)
+
 -- ========== DRAGGING FUNCTIONALITY ==========
 local draggingSpammer = false
 local draggingBooster = false
+local draggingESP = false
 local dragStart, startPos
 
 -- Spammer dragging
@@ -291,6 +401,23 @@ BoosterFrame.InputBegan:Connect(function(input)
     end
 end)
 
+-- ESP dragging
+ESPFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        draggingESP = true
+        dragStart = input.Position
+        startPos = ESPFrame.Position
+        TweenService:Create(ESPFrame, TweenInfo.new(0.1), { BackgroundTransparency = 0.3 }):Play()
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                draggingESP = false
+                TweenService:Create(ESPFrame, TweenInfo.new(0.1), { BackgroundTransparency = 0.2 }):Play()
+            end
+        end)
+    end
+end)
+
 UserInputService.InputChanged:Connect(function(input)
     if draggingSpammer and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
         local delta = input.Position - dragStart
@@ -306,12 +433,18 @@ UserInputService.InputChanged:Connect(function(input)
         local delta = input.Position - dragStart
         BoosterFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
+    
+    if draggingESP and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        ESPFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
 end)
 
 UserInputService.InputEnded:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         draggingSpammer = false
         draggingBooster = false
+        draggingESP = false
     end
 end)
 
@@ -484,4 +617,156 @@ end)
 
 BoosterFrame.MouseLeave:Connect(function()
     TweenService:Create(Stroke, TweenInfo.new(0.2), { Transparency = 0.3 }):Play()
+end)
+
+-- ========== ESP SYSTEM ==========
+local ESPEnabled = false
+local ESPBoxes = {}
+
+local function addESP(player)
+    if player == LocalPlayer then return end
+    
+    local character = player.Character
+    if not character then return end
+    
+    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+    if not humanoidRootPart then return end
+    
+    -- Create Billboard GUI
+    local billboardGui = Instance.new("BillboardGui")
+    billboardGui.Size = UDim2.new(4, 0, 5, 0)
+    billboardGui.MaxDistance = 500
+    billboardGui.Name = "ESP_Billboard"
+    billboardGui.Parent = humanoidRootPart
+    
+    -- Create Frame for highlight
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 1, 0)
+    frame.BackgroundColor3 = Color3.new(0, 1, 1)
+    frame.BackgroundTransparency = 0.3
+    frame.BorderColor3 = Color3.new(0, 1, 1)
+    frame.BorderSizePixel = 2
+    frame.Parent = billboardGui
+    
+    -- Create corner radius
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 5)
+    
+    -- Create text label for player name
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Size = UDim2.new(1, 0, 0, 20)
+    textLabel.Position = UDim2.new(0, 0, -0.25, 0)
+    textLabel.BackgroundTransparency = 0.5
+    textLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+    textLabel.Text = player.Name
+    textLabel.TextColor3 = Color3.new(0, 1, 1)
+    textLabel.TextScaled = true
+    textLabel.Font = Enum.Font.GothamBold
+    textLabel.Parent = frame
+    
+    -- Create health label
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    local healthLabel = Instance.new("TextLabel")
+    healthLabel.Size = UDim2.new(1, 0, 0, 20)
+    healthLabel.Position = UDim2.new(0, 0, 1, 0)
+    healthLabel.BackgroundTransparency = 0.5
+    healthLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+    healthLabel.Text = "HP: " .. math.floor(humanoid.Health)
+    healthLabel.TextColor3 = Color3.new(0, 1, 0)
+    healthLabel.TextScaled = true
+    healthLabel.Font = Enum.Font.GothamBold
+    healthLabel.Parent = frame
+    
+    ESPBoxes[player] = {
+        billboard = billboardGui,
+        frame = frame,
+        healthLabel = healthLabel
+    }
+    
+    -- Update health label
+    humanoid.HealthChanged:Connect(function()
+        if humanoid.Health > 0 then
+            healthLabel.Text = "HP: " .. math.floor(humanoid.Health)
+        end
+    end)
+end
+
+local function removeESP(player)
+    if ESPBoxes[player] then
+        ESPBoxes[player].billboard:Destroy()
+        ESPBoxes[player] = nil
+    end
+end
+
+local function updateAllESP()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            local character = player.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                if not ESPBoxes[player] and ESPEnabled then
+                    if showInvisible or character:FindFirstChildOfClass("Humanoid").Health > 0 then
+                        addESP(player)
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- ESP Toggle
+ESPToggleButton.MouseButton1Click:Connect(function()
+    ESPEnabled = not ESPEnabled
+    
+    local targetColor = ESPEnabled and Color3.new(0, 0.8, 0) or Color3.new(0.8, 0, 0)
+    local targetPos = ESPEnabled and UDim2.new(1, -14, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)
+    local statusText = ESPEnabled and "ON" or "OFF"
+    local statusColor = ESPEnabled and Color3.new(0, 1, 0) or Color3.new(1, 0, 0)
+    
+    TweenService:Create(ESPToggleBackground, TweenInfoSmooth, { BackgroundColor3 = targetColor }):Play()
+    TweenService:Create(ESPKnob, TweenInfoBounce, { Position = targetPos }):Play()
+    TweenService:Create(ESPStatusLabel, TweenInfoSmooth, { TextColor3 = statusColor }):Play()
+    
+    TweenService:Create(ESPKnob, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = UDim2.new(0, 16, 0, 16) }):Play()
+    task.wait(0.1)
+    TweenService:Create(ESPKnob, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = UDim2.new(0, 12, 0, 12) }):Play()
+    
+    ESPStatusLabel.Text = statusText
+    
+    if ESPEnabled then
+        updateAllESP()
+    else
+        for player, _ in pairs(ESPBoxes) do
+            removeESP(player)
+        end
+    end
+end)
+
+-- Add ESP to new players
+Players.PlayerAdded:Connect(function(player)
+    if ESPEnabled then
+        player.CharacterAdded:Connect(function()
+            task.wait(0.1)
+            addESP(player)
+        end)
+    end
+end)
+
+-- Remove ESP when player leaves
+Players.PlayerRemoving:Connect(function(player)
+    removeESP(player)
+end)
+
+-- Update ESP every frame
+RunService.RenderStepped:Connect(function()
+    if ESPEnabled then
+        updateAllESP()
+    end
+end)
+
+-- ESP Frame effects
+ESPFrame.MouseEnter:Connect(function()
+    TweenService:Create(ESPStroke, TweenInfo.new(0.2), { Transparency = 0.1 }):Play()
+end)
+
+ESPFrame.MouseLeave:Connect(function()
+    TweenService:Create(ESPStroke, TweenInfo.new(0.2), { Transparency = 0.3 }):Play()
 end)
