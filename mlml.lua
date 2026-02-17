@@ -3,6 +3,7 @@ local UserInputService = game:GetService("UserInputService")
 local TextChatService = game:GetService("TextChatService")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
+local Camera = workspace.CurrentCamera
 
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
@@ -336,39 +337,6 @@ ESPStatusLabel.TextSize = 10
 ESPStatusLabel.TextXAlignment = Enum.TextXAlignment.Center
 ESPStatusLabel.Parent = ESPFrame
 
--- Visibility toggle
-local VisibilityLabel = Instance.new("TextLabel")
-VisibilityLabel.Size = UDim2.new(0, 70, 0, 16)
-VisibilityLabel.Position = UDim2.new(0, 10, 0, 32)
-VisibilityLabel.BackgroundTransparency = 1
-VisibilityLabel.Text = "Invisible:"
-VisibilityLabel.TextColor3 = Color3.new(1, 1, 1)
-VisibilityLabel.Font = Enum.Font.Gotham
-VisibilityLabel.TextSize = 11
-VisibilityLabel.TextXAlignment = Enum.TextXAlignment.Left
-VisibilityLabel.Parent = ESPFrame
-
-local VisibilityToggle = Instance.new("TextButton")
-VisibilityToggle.Name = "VisibilityToggle"
-VisibilityToggle.Size = UDim2.new(0, 35, 0, 16)
-VisibilityToggle.Position = UDim2.new(0, 85, 0, 32)
-VisibilityToggle.BackgroundColor3 = Color3.new(0.2, 0.6, 0.2)
-VisibilityToggle.TextColor3 = Color3.new(1, 1, 1)
-VisibilityToggle.Text = "YES"
-VisibilityToggle.Font = Enum.Font.GothamBold
-VisibilityToggle.TextSize = 10
-VisibilityToggle.AutoButtonColor = false
-VisibilityToggle.Parent = ESPFrame
-
-Instance.new("UICorner", VisibilityToggle).CornerRadius = UDim.new(0, 4)
-
-local showInvisible = true
-VisibilityToggle.MouseButton1Click:Connect(function()
-    showInvisible = not showInvisible
-    VisibilityToggle.Text = showInvisible and "YES" or "NO"
-    VisibilityToggle.BackgroundColor3 = showInvisible and Color3.new(0.2, 0.6, 0.2) or Color3.new(0.6, 0.2, 0.2)
-end)
-
 -- ========== DRAGGING FUNCTIONALITY ==========
 local draggingSpammer = false
 local draggingBooster = false
@@ -619,12 +587,13 @@ BoosterFrame.MouseLeave:Connect(function()
     TweenService:Create(Stroke, TweenInfo.new(0.2), { Transparency = 0.3 }):Play()
 end)
 
--- ========== ESP SYSTEM ==========
+-- ========== ESP SYSTEM (FIXED) ==========
 local ESPEnabled = false
 local ESPBoxes = {}
 
-local function addESP(player)
+local function createESPBox(player)
     if player == LocalPlayer then return end
+    if ESPBoxes[player] then return end
     
     local character = player.Character
     if not character then return end
@@ -632,83 +601,49 @@ local function addESP(player)
     local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
     if not humanoidRootPart then return end
     
-    -- Create Billboard GUI
-    local billboardGui = Instance.new("BillboardGui")
-    billboardGui.Size = UDim2.new(4, 0, 5, 0)
-    billboardGui.MaxDistance = 500
-    billboardGui.Name = "ESP_Billboard"
-    billboardGui.Parent = humanoidRootPart
+    -- Create highlight effect directly on character
+    local highlight = Instance.new("Highlight")
+    highlight.Parent = character
+    highlight.FillColor = Color3.fromRGB(0, 255, 255)
+    highlight.OutlineColor = Color3.fromRGB(0, 255, 255)
+    highlight.FillTransparency = 0.3
+    highlight.OutlineTransparency = 0
     
-    -- Create Frame for highlight
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, 0, 1, 0)
-    frame.BackgroundColor3 = Color3.new(0, 1, 1)
-    frame.BackgroundTransparency = 0.3
-    frame.BorderColor3 = Color3.new(0, 1, 1)
-    frame.BorderSizePixel = 2
-    frame.Parent = billboardGui
+    -- Create name label using SurfaceGui
+    local surfaceGui = Instance.new("SurfaceGui")
+    surfaceGui.Parent = humanoidRootPart
+    surfaceGui.Face = Enum.NormalId.Top
+    surfaceGui.CanvasSize = Vector2.new(200, 50)
     
-    -- Create corner radius
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 5)
-    
-    -- Create text label for player name
-    local textLabel = Instance.new("TextLabel")
-    textLabel.Size = UDim2.new(1, 0, 0, 20)
-    textLabel.Position = UDim2.new(0, 0, -0.25, 0)
-    textLabel.BackgroundTransparency = 0.5
-    textLabel.BackgroundColor3 = Color3.new(0, 0, 0)
-    textLabel.Text = player.Name
-    textLabel.TextColor3 = Color3.new(0, 1, 1)
-    textLabel.TextScaled = true
-    textLabel.Font = Enum.Font.GothamBold
-    textLabel.Parent = frame
-    
-    -- Create health label
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-    local healthLabel = Instance.new("TextLabel")
-    healthLabel.Size = UDim2.new(1, 0, 0, 20)
-    healthLabel.Position = UDim2.new(0, 0, 1, 0)
-    healthLabel.BackgroundTransparency = 0.5
-    healthLabel.BackgroundColor3 = Color3.new(0, 0, 0)
-    healthLabel.Text = "HP: " .. math.floor(humanoid.Health)
-    healthLabel.TextColor3 = Color3.new(0, 1, 0)
-    healthLabel.TextScaled = true
-    healthLabel.Font = Enum.Font.GothamBold
-    healthLabel.Parent = frame
+    local nameLabel = Instance.new("TextLabel")
+    nameLabel.Size = UDim2.new(1, 0, 1, 0)
+    nameLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+    nameLabel.BackgroundTransparency = 0.5
+    nameLabel.Text = player.Name
+    nameLabel.TextColor3 = Color3.fromRGB(0, 255, 255)
+    nameLabel.TextScaled = true
+    nameLabel.Font = Enum.Font.GothamBold
+    nameLabel.Parent = surfaceGui
     
     ESPBoxes[player] = {
-        billboard = billboardGui,
-        frame = frame,
-        healthLabel = healthLabel
+        highlight = highlight,
+        surfaceGui = surfaceGui,
+        nameLabel = nameLabel
     }
     
-    -- Update health label
-    humanoid.HealthChanged:Connect(function()
-        if humanoid.Health > 0 then
-            healthLabel.Text = "HP: " .. math.floor(humanoid.Health)
-        end
-    end)
+    print("✅ ESP added for: " .. player.Name)
 end
 
-local function removeESP(player)
+local function removeESPBox(player)
     if ESPBoxes[player] then
-        ESPBoxes[player].billboard:Destroy()
-        ESPBoxes[player] = nil
-    end
-end
-
-local function updateAllESP()
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer then
-            local character = player.Character
-            if character and character:FindFirstChild("HumanoidRootPart") then
-                if not ESPBoxes[player] and ESPEnabled then
-                    if showInvisible or character:FindFirstChildOfClass("Humanoid").Health > 0 then
-                        addESP(player)
-                    end
-                end
-            end
+        if ESPBoxes[player].highlight then
+            ESPBoxes[player].highlight:Destroy()
         end
+        if ESPBoxes[player].surfaceGui then
+            ESPBoxes[player].surfaceGui:Destroy()
+        end
+        ESPBoxes[player] = nil
+        print("❌ ESP removed for: " .. player.Name)
     end
 end
 
@@ -732,34 +667,37 @@ ESPToggleButton.MouseButton1Click:Connect(function()
     ESPStatusLabel.Text = statusText
     
     if ESPEnabled then
-        updateAllESP()
-    else
-        for player, _ in pairs(ESPBoxes) do
-            removeESP(player)
+        -- Add ESP to all players
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then
+                createESPBox(player)
+            end
         end
+        print("🔵 ESP ENABLED")
+    else
+        -- Remove ESP from all players
+        for player, _ in pairs(ESPBoxes) do
+            removeESPBox(player)
+        end
+        print("🔴 ESP DISABLED")
     end
 end)
 
 -- Add ESP to new players
 Players.PlayerAdded:Connect(function(player)
+    task.wait(0.5)
     if ESPEnabled then
         player.CharacterAdded:Connect(function()
             task.wait(0.1)
-            addESP(player)
+            createESPBox(player)
         end)
+        createESPBox(player)
     end
 end)
 
 -- Remove ESP when player leaves
 Players.PlayerRemoving:Connect(function(player)
-    removeESP(player)
-end)
-
--- Update ESP every frame
-RunService.RenderStepped:Connect(function()
-    if ESPEnabled then
-        updateAllESP()
-    end
+    removeESPBox(player)
 end)
 
 -- ESP Frame effects
